@@ -1,15 +1,10 @@
 require 'sinatra'
+require './config/logging'
+Dir["./lib/*.rb"].each { |f| require f }
 
 class Screenshotter < Sinatra::Base
   get '/' do
-    url = params[:url]
-    filename = File.join("/", "tmp", "#{Time.new.to_f}.png")
-
-    driver = Capybara::Webkit::Driver.new(Screenshotter)
-    driver.browser.visit(url)
-    driver.save_screenshot(filename)
-
-    send_file filename
+    send_file Screenshot.take(params[:url])
   end
 end
 
